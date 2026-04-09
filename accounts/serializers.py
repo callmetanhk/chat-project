@@ -34,3 +34,23 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         return user
+
+
+from .models import User
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+        if instance.avatar:
+
+            request = self.context.get('request')
+            if request:
+                ret['avatar'] = request.build_absolute_uri(instance.avatar.url)
+            else:
+                ret['avatar'] = f"http://localhost:8000{instance.avatar.url}"
+        return ret
+
+    class Meta:
+        model = User
+        fields = ['full_name', 'phone', 'email', 'avatar']
+        # read_only_fields = ['email']

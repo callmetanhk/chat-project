@@ -1,5 +1,5 @@
 from rest_framework import generics, status
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, UserProfileSerializer
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
@@ -85,6 +85,9 @@ class LogoutView(APIView):
                 status=400
             )
             
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
+
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -98,12 +101,24 @@ class ProfileView(APIView):
                 "full_name": user.full_name,
                 "phone": user.phone
 
-
             }
         )
 
     def put(self, request):
         user = request.user
-        user.full_name = request.data.get("full_name", user.full_name)
-        user.phone = request.data.get("phone", user.phone)
+        # CẦN TRUYỀN context={'request': request} để sau khi save,
+        # dữ liệu trả về (serializer.data) chứa URL ảnh chuẩn port 8000
+        serializer = UserProfileSerializer(user, data=request.data, partial=True, context={'request': request})
 
+        if serializer.is_valid():
+            serializer.save()
+            return success_response(
+                message="Profile updated successfully",
+                data=serializer.data
+            )
+
+        return error_response(
+            message="Update failed",
+            errors=serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )

@@ -1,4 +1,7 @@
+from django.conf.urls.static import static
 from django.urls import path
+
+from chat_project import settings
 from .views import StartPrivateChatView, ConversationListView, SearchUserView, MessageListView
 
 urlpatterns = [
