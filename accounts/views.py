@@ -1,9 +1,7 @@
-from django.shortcuts import render
 from rest_framework import generics, status
 from .serializers import RegisterSerializer
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from common.response import success_response, error_response
@@ -96,6 +94,16 @@ class ProfileView(APIView):
         return success_response(
             data={
                 "username": user.username,
-                "email": user.email
+                "email": user.email,
+                "full_name": user.full_name,
+                "phone": user.phone
+
+
             }
         )
+
+    def put(self, request):
+        user = request.user
+        user.full_name = request.data.get("full_name", user.full_name)
+        user.phone = request.data.get("phone", user.phone)
+
