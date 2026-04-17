@@ -3,6 +3,9 @@ import axios from "../../api/axios";
 import { Send, Smile, Paperclip, MoreVertical, Phone, Video, ChevronLeft, FileText, X } from "lucide-react";
 import { ChatListItem } from "../chat/ChatListItem";
 import { ChatMessage } from "../chat/ChatMessage";
+import { MessageList } from "../chat/MessageList";
+import { MessageInput } from "../chat/MessageInput";
+import { ChatHeader } from "../chat/ChatHeader";
 
 export default function ChatArea({ selectedChat, user, onBack, rooms, onSelectChat }) {
   const [messages, setMessages] = useState([]);
@@ -14,6 +17,8 @@ export default function ChatArea({ selectedChat, user, onBack, rooms, onSelectCh
   const bottomRef = useRef(null);
   const fileInputRef = useRef(null);
   const isFirstLoad = useRef(true); // Kiểm soát hiệu ứng cuộn
+
+  // console.log("user in ChatArea:", user);
 
   // --- 0. KHÔI PHỤC PHIÊN LÀM VIỆC (F5) ---
   useEffect(() => {
@@ -172,7 +177,7 @@ export default function ChatArea({ selectedChat, user, onBack, rooms, onSelectCh
         messages={messages} 
         user={user} 
         bottomRef={bottomRef} 
-        chatPartnerName={selectedChat.name} 
+        selectedChat={selectedChat} 
       />
 
       <MessageInput 

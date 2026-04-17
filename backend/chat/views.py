@@ -3,7 +3,10 @@ from chat.models import Conversation, Participant, Message
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import Message
+from rest_framework.parsers import MultiPartParser, FormParser
+from .models import Message, Attachment
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 
 User = get_user_model()
 
@@ -53,7 +56,6 @@ class StartPrivateChatView(APIView):
             "message": "Conversation created"
         })
 
-
 class ConversationListView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -83,7 +85,6 @@ class ConversationListView(APIView):
             data.append(res_item)
 
         return Response(data)
-
 
 class SearchUserView(APIView):
     permission_classes = [IsAuthenticated]
@@ -128,13 +129,6 @@ class MessageListView(APIView):
             }
             for m in messages
         ])
-from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.parsers import MultiPartParser, FormParser
-from .models import Message, Attachment
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
 
 class SendMessageView(APIView):
     permission_classes = [IsAuthenticated]

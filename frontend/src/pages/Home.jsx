@@ -31,7 +31,7 @@ export default function Home() {
         ]);
         if (isMounted) {
           setUser(profileRes.data.data);
-          setForm(profileRes.data.data); // Khởi tạo form từ dữ liệu user
+          setForm(profileRes.data.data); 
           setRooms(chatRes.data);
         }
       } catch (err) {

@@ -2,10 +2,10 @@ from rest_framework import generics, status
 from .serializers import RegisterSerializer, UserProfileSerializer
 from rest_framework.views import APIView
 from django.contrib.auth import authenticate
-from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from common.response import success_response, error_response
-
+from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -84,29 +84,22 @@ class LogoutView(APIView):
                 message="Invalid token",
                 status=400
             )
-            
-from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+
 
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        user = request.user
+        # Truyền context={'request': request} để Serializer tự build Absolute URL cho avatar
+        serializer = UserProfileSerializer(request.user, context={'request': request})
 
         return success_response(
-            data={
-                "username": user.username,
-                "email": user.email,
-                "full_name": user.full_name,
-                "phone": user.phone
-
-            }
+            data=serializer.data
         )
 
     def put(self, request):
         user = request.user
-
+        # Sử dụng partial=True để cho phép cập nhật chỉ một vài trường (ví dụ chỉ đổi tên, không đổi ảnh)
         serializer = UserProfileSerializer(user, data=request.data, partial=True, context={'request': request})
 
         if serializer.is_valid():

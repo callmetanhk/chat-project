@@ -36,21 +36,22 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
-from .models import User
-
 class UserProfileSerializer(serializers.ModelSerializer):
-    def to_representation(self, instance):
-        ret = super().to_representation(instance)
-        if instance.avatar:
 
-            request = self.context.get('request')
-            if request:
-                ret['avatar'] = request.build_absolute_uri(instance.avatar.url)
-            else:
-                ret['avatar'] = f"http://localhost:8000{instance.avatar.url}"
-        return ret
+    avatar = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['full_name', 'phone', 'email', 'avatar']
-        # read_only_fields = ['email']
+
+        fields = ['username', 'full_name', 'phone', 'email', 'avatar']
+
+        read_only_fields = ['username', 'email']
+
+    def get_avatar(self, obj):
+        if obj.avatar:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.avatar.url)
+            # Fallback nếu không có request
+            return f"http://localhost:8000{obj.avatar.url}"
+        return None

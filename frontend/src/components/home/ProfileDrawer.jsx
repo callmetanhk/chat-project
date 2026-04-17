@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { X, Pencil, Mail, Phone, LogOut, Camera, User as UserIcon } from "lucide-react";
+import { Toast } from "../ui/Toast";
 
 export default function ProfileDrawer({ 
   user, editing, form, onFormChange, onUpdate, 
@@ -11,7 +12,7 @@ export default function ProfileDrawer({
     if (form?.avatar instanceof File) {
       return URL.createObjectURL(form.avatar);
     }
-    return user?.avatar; // Nếu không chọn file mới, dùng ảnh cũ từ server
+    return user?.avatar; 
   }, [form?.avatar, user?.avatar]);
 
   const renderAvatarContent = () => {

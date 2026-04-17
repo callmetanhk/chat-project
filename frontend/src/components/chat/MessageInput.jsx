@@ -1,3 +1,5 @@
+import { Smile, Paperclip, Send  } from "lucide-react";
+
 export const MessageInput = ({ 
   input, setInput, sendMessage, handleFileChange, fileInputRef, 
   previews, removeFile, hasContentOrFiles 
