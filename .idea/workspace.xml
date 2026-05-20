@@ -5,19 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a4e4c06a-8b5a-44fe-9002-8efe60f630a4" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/accounts/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/accounts/serializers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/backend/accounts/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/accounts/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/chat/ChatHeader.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/chat/ChatHeader.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/chat/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/chat/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/chat/routing.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/chat/routing.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/chat/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/chat/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/chat/ChatMessage.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/chat/ChatMessage.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/chat/MessageInput.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/chat/MessageInput.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/chat/MessageList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/chat/MessageList.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/home/ChatArea.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/home/ChatArea.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/home/ProfileDrawer.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/home/ProfileDrawer.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/home/Sidebar.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/home/Sidebar.jsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/pages/Home.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Home.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Login.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Login.jsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -48,7 +43,7 @@
     "Python.serializers.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
-    "last_opened_file_path": "D:/Tool/ExcelCompareApp",
+    "last_opened_file_path": "D:/python/Django/chat_project/backend",
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>

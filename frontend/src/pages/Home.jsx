@@ -63,7 +63,7 @@ export default function Home() {
       formData.append("phone", form.phone || "");
       formData.append("email", form.email || "");
 
-      // Nếu avatar là một File mới được chọn từ input, ta mới gửi lên
+   0   // Nếu avatar là một File mới được chọn từ input, ta mới gửi lên
       if (form.avatar instanceof File) {
         formData.append("avatar", form.avatar);
       }

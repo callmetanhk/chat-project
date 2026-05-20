@@ -16,7 +16,7 @@ class Conversation(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
 
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)  # 🔥 dùng để sort
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.name or 'Conversation'} ({self.type})"
@@ -49,7 +49,7 @@ class Message(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL
-    )  # 🔥 reply message
+    )  #  reply message
 
     is_edited = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
@@ -81,7 +81,7 @@ class MessageStatus(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('message', 'user')  # 🔥 tránh duplicate
+        unique_together = ('message', 'user')
 
 class Attachment(models.Model):
     message = models.ForeignKey(

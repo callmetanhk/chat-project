@@ -12,50 +12,47 @@ export const ChatMessage = ({ msg, isMe, hideAvatar, selectedChat }) => {
   const avatarUrl = getAvatarUrl(selectedChat.avatar);
 
   const formatChatTime = (isoString) => {
-    const date = new Date(isoString);
+    if (!isoString) return "Vừa xong";
 
-    if (!isoString || isNaN(date.getTime())) return "Vừa xong";
+    const date = new Date(isoString);
+    if (isNaN(date.getTime())) return "Vừa xong";
 
     const now = new Date();
 
+    // Định dạng giờ:phút (HH:mm)
     const timeStr = date.toLocaleTimeString('vi-VN', {
       hour: '2-digit',
       minute: '2-digit',
       hour12: false
     });
 
-    const isToday = date.toDateString() === now.toDateString();
+    // So sánh chính xác Ngày, Tháng, Năm
+    const isToday =
+      date.getDate() === now.getDate() &&
+      date.getMonth() === now.getMonth() &&
+      date.getFullYear() === now.getFullYear();
 
-    const yesterday = new Date();
+    // Kiểm tra Hôm qua
+    const yesterday = new Date(now);
     yesterday.setDate(now.getDate() - 1);
-    const isYesterday = date.toDateString() === yesterday.toDateString();
+    const isYesterday =
+      date.getDate() === yesterday.getDate() &&
+      date.getMonth() === yesterday.getMonth() &&
+      date.getFullYear() === yesterday.getFullYear();
 
     const isSameYear = date.getFullYear() === now.getFullYear();
 
-    if (isToday) {
-      return timeStr;
-    }
-
-    if (isYesterday) {
-      return `${timeStr} Hôm qua`;
-    }
-
+    // Trả về kết quả
+    if (isToday) return timeStr;
+    if (isYesterday) return `${timeStr} Hôm qua`;
     if (isSameYear) {
-      const dateStr = date.toLocaleDateString('vi-VN', {
-        day: '2-digit',
-        month: '2-digit'
-      });
-      return `${timeStr} ${dateStr}`;
+      return `${timeStr} ${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}`;
     }
 
-    const fullDateStr = date.toLocaleDateString('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-    return `${timeStr} ${fullDateStr}`;
+    return `${timeStr} ${date.toLocaleDateString('vi-VN')}`;
   };
-
+  // console.log("ChatMessage render:", msg);
+  // console.log(formatChatTime("2026-04-17T03:44:17.056355Z"));
   const displayName = isMe ? "Bạn" : (msg.sender?.full_name || msg.full_name || selectedChat?.name || "Người dùng");
 
   return (
@@ -86,17 +83,32 @@ export const ChatMessage = ({ msg, isMe, hideAvatar, selectedChat }) => {
         )}
 
         {/* Nội dung tin nhắn */}
-        <div className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}>
-          {!hideAvatar && (
-            <div className={`flex items-center gap-2 mb-1 ${isMe ? "flex-row-reverse" : "flex-row"}`}>
-              {!isMe && <span className="text-[12px] font-bold text-gray-700">{displayName}</span>}
-              <span className="text-[10px] text-gray-400">{formatChatTime(msg.created_at)}</span>
-            </div>
-          )}
 
+        <div className={`flex flex-col ${isMe ? "items-end" : "items-start"}`}>
+
+          {/* Dòng Header: Tên và Thời gian */}
+          <div className={`flex items-center gap-2 mb-1 ${isMe ? "flex-row-reverse" : "flex-row"}`}>
+
+            {/* 1. Hiển thị Tên: Chỉ khi là ĐỐI PHƯƠNG và KHÔNG bị ẩn avatar */}
+            {!isMe && !hideAvatar && (
+              <span className="text-[12px] font-bold text-gray-700">
+                {displayName}
+              </span> 
+            )}
+
+            {/* 2. Hiển thị Thời gian: LUÔN HIỆN cho cả hai bên */}
+            <span className="text-[10px] text-gray-400">
+              {formatChatTime(msg.created_at)}
+            </span>
+
+          </div>
+
+          {/* Nội dung tin nhắn */}
           <div className={`flex flex-col gap-1.5 ${isMe ? "items-end" : "items-start"}`}>
             {msg.message && (
-              <div className={`px-4 py-2 rounded-2xl text-[14.5px] shadow-sm ${isMe ? "bg-indigo-600 text-white rounded-tr-none" : "bg-white text-gray-800 border border-gray-100 rounded-tl-none"
+              <div className={`px-4 py-2 rounded-2xl text-[14.5px] shadow-sm ${isMe
+                  ? "bg-indigo-600 text-white rounded-tr-none"
+                  : "bg-white text-gray-800 border border-gray-100 rounded-tl-none"
                 }`}>
                 {msg.message}
               </div>

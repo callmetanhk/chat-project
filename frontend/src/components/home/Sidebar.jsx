@@ -40,6 +40,9 @@ export default function Sidebar({ user, rooms, selectedChat, onSelectChat, onLog
     } catch (err) { console.error(err); }
   };
 
+
+  // console.log("Sidebar render:", { rooms, selectedChat, isCollapsed });
+  
   return (
     <div className={`bg-[#f0f4f9] flex flex-col shrink-0 h-full transition-all duration-300 ease-in-out ${isCollapsed ? "w-20" : "w-72"}`}>
       
