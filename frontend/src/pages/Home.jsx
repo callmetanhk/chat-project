@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import axios from "../api/axios";
 import { useNavigate } from "react-router-dom";
-import Header from "../components/home/Header"; 
+import Header from "../components/home/Header";
 import Sidebar from "../components/home/Sidebar";
 import ChatArea from "../components/home/ChatArea";
 import ProfileDrawer from "../components/home/ProfileDrawer";
@@ -11,7 +11,7 @@ export default function Home() {
   const [rooms, setRooms] = useState([]);
   const [selectedChat, setSelectedChat] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  
+
   // States cho Profile
   const [showProfile, setShowProfile] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -31,8 +31,8 @@ export default function Home() {
         ]);
         if (isMounted) {
           setUser(profileRes.data.data);
-          setForm(profileRes.data.data); 
-          setRooms(chatRes.data);
+          setForm(profileRes.data.data);
+          setRooms(chatRes.data.data || []);
         }
       } catch (err) {
         if (isMounted) navigate("/login");
@@ -63,7 +63,7 @@ export default function Home() {
       formData.append("phone", form.phone || "");
       formData.append("email", form.email || "");
 
-   0   // Nếu avatar là một File mới được chọn từ input, ta mới gửi lên
+      0   // Nếu avatar là một File mới được chọn từ input, ta mới gửi lên
       if (form.avatar instanceof File) {
         formData.append("avatar", form.avatar);
       }
@@ -100,7 +100,7 @@ export default function Home() {
   const refreshRooms = async () => {
     try {
       const res = await axios.get("/chat/conversations/");
-      setRooms(res.data);
+      setRooms(res.data.data || []);
     } catch (err) { console.error(err); }
   };
 
@@ -109,47 +109,47 @@ export default function Home() {
   return (
     <div className="h-screen flex flex-col bg-[#f0f4f9] overflow-hidden text-[#1f1f1f]">
       {/* HEADER */}
-      <Header 
-        user={user} 
-        onShowProfile={() => setShowProfile(true)} 
-        toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} 
+      <Header
+        user={user}
+        onShowProfile={() => setShowProfile(true)}
+        toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
       />
 
       <div className="flex flex-1 overflow-hidden">
         {/* SIDEBAR */}
-        <Sidebar 
-          user={user} 
+        <Sidebar
+          user={user}
           rooms={rooms}
           isCollapsed={!isSidebarOpen}
-          selectedChat={selectedChat} 
-          onSelectChat={handleSelectChat} 
+          selectedChat={selectedChat}
+          onSelectChat={handleSelectChat}
           onLogout={handleLogout}
           refreshRooms={refreshRooms}
         />
-        
+
         {/* CHAT AREA */}
-        <ChatArea 
-          user={user} 
+        <ChatArea
+          user={user}
           rooms={rooms}
-          selectedChat={selectedChat} 
+          selectedChat={selectedChat}
           onSelectChat={handleSelectChat}
-          onBack={() => setSelectedChat(null)} 
+          onBack={() => setSelectedChat(null)}
         />
       </div>
 
       {/* PROFILE DRAWER (Slide từ phải sang) */}
       {showProfile && (
-        <ProfileDrawer 
-          user={user} 
+        <ProfileDrawer
+          user={user}
           editing={isEditing}
           form={form}
           onEdit={handleEdit}
           onCancel={handleCancelEdit}
           onFormChange={handleFormChange}
           onUpdate={handleUpdateProfile}
-          onClose={() => { 
-            setShowProfile(false); 
-            setIsEditing(false); 
+          onClose={() => {
+            setShowProfile(false);
+            setIsEditing(false);
             setForm(user); // Reset form khi đóng drawer
           }}
           onLogout={handleLogout}

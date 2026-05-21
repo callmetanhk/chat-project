@@ -44,7 +44,7 @@ export default function ChatArea({ selectedChat, user, onBack, rooms, onSelectCh
     const fetchMessages = async () => {
       try {
         const res = await axios.get(`/chat/messages/${selectedChat.id}/`);
-        setMessages(res.data);
+        setMessages(res.data.data || []);
       } catch (err) { 
         console.error("Lỗi tải tin nhắn:", err); 
       }
