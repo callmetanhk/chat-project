@@ -35,6 +35,9 @@ export default function Sidebar({
   const [groupAvatar, setGroupAvatar] = useState(null);
   const [selectedUsers, setSelectedUsers] = useState([]);
 
+  // =========================
+  // GET FULL IMAGE URL
+  // =========================
   const getFullUrl = (path) => {
 
     if (!path) return null;
@@ -46,7 +49,9 @@ export default function Sidebar({
     return `http://localhost:8000${path}`;
   };
 
+  // =========================
   // SEARCH USER
+  // =========================
   const handleSearch = async (e) => {
 
     const val = e.target.value;
@@ -71,7 +76,9 @@ export default function Sidebar({
     }
   };
 
-  // PRIVATE CHAT
+  // =========================
+  // START PRIVATE CHAT
+  // =========================
   const startChat = async (u) => {
 
     try {
@@ -103,7 +110,9 @@ export default function Sidebar({
     }
   };
 
+  // =========================
   // SELECT USER FOR GROUP
+  // =========================
   const toggleSelectUser = (u) => {
 
     const exists = selectedUsers.find(
@@ -122,7 +131,9 @@ export default function Sidebar({
     }
   };
 
+  // =========================
   // CREATE GROUP CHAT
+  // =========================
   const createGroupChat = async () => {
 
     if (!groupName.trim()) {
@@ -181,6 +192,7 @@ export default function Sidebar({
 
   return (
     <>
+
       <div
         className={`
           bg-[#f0f4f9]
@@ -195,7 +207,7 @@ export default function Sidebar({
         `}
       >
 
-        {/* NEW CHAT */}
+        {/* ================= NEW CHAT ================= */}
         <div className="p-4 flex flex-col items-center">
 
           <div className="flex gap-2 w-full">
@@ -393,7 +405,7 @@ export default function Sidebar({
 
         </div>
 
-        {/* NAV */}
+        {/* ================= NAV ================= */}
         <nav className="flex flex-col gap-1 px-4">
 
           <SidebarNavItem
@@ -411,145 +423,96 @@ export default function Sidebar({
 
         </nav>
 
-        {/* CHAT LIST */}
+        {/* ================= CHAT LIST ================= */}
         <div className="flex-1 overflow-y-auto mt-4 px-2">
 
+          {/* PRIVATE CHAT */}
           {!isCollapsed && (
-
             <div className="flex items-center gap-2 px-4 py-2 text-gray-500">
-
               <ChevronDown size={14} />
 
               <span className="text-[11px] font-bold uppercase opacity-70">
-                Cuộc trò chuyện
+                Tin nhắn riêng
               </span>
-
             </div>
-
           )}
 
           <div className="mt-1 space-y-1">
 
-            {rooms.map((room) => {
+            {rooms
+              .filter((room) => room.type === "PRIVATE")
+              .map((room) => {
 
-              const isLastMsgFromMe =
-                room.last_msg_sender === user.username;
+                const isLastMsgFromMe =
+                  room.last_msg_sender === user.username;
 
-              const displayLastMsg =
-                room.lastMsg
-                  ? `${isLastMsgFromMe ? "Bạn: " : ""}${room.lastMsg}`
-                  : "Bắt đầu cuộc trò chuyện";
+                const displayLastMsg =
+                  room.lastMsg
+                    ? `${isLastMsgFromMe ? "Bạn: " : ""}${room.lastMsg}`
+                    : "Bắt đầu cuộc trò chuyện";
 
-              return (
+                return (
 
-                <div
-                  key={room.id}
-                  onClick={() => onSelectChat(room)}
-                  className={`
-                    flex
-                    items-center
-                    rounded-xl
-                    cursor-pointer
-                    transition-all
-                    ${isCollapsed
-                      ? "justify-center h-14 w-14 mx-auto"
-                      : "gap-3 px-4 py-3"}
-                    ${selectedChat?.id === room.id
-                      ? "bg-[#d3e3fd]"
-                      : "hover:bg-[#e1e5ea]"}
-                  `}
-                >
+                  <ConversationItem
+                    key={room.id}
+                    room={room}
+                    selectedChat={selectedChat}
+                    onSelectChat={onSelectChat}
+                    displayLastMsg={displayLastMsg}
+                    getFullUrl={getFullUrl}
+                    isCollapsed={isCollapsed}
+                  />
 
-                  {/* AVATAR */}
-                  <div className="relative shrink-0">
+                );
+              })}
 
-                    {room.avatar ? (
+          </div>
 
-                      <img
-                        src={getFullUrl(room.avatar)}
-                        className="
-                          w-10
-                          h-10
-                          rounded-full
-                          object-cover
-                        "
-                        alt=""
-                      />
+          {/* GROUP CHAT */}
+          {!isCollapsed && (
+            <div className="flex items-center gap-2 px-4 py-2 mt-5 text-gray-500">
+              <ChevronDown size={14} />
 
-                    ) : (
+              <span className="text-[11px] font-bold uppercase opacity-70">
+                Nhóm chat
+              </span>
+            </div>
+          )}
 
-                      <div
-                        className="
-                          w-10
-                          h-10
-                          bg-indigo-100
-                          text-indigo-700
-                          flex
-                          items-center
-                          justify-center
-                          rounded-full
-                          text-sm
-                          font-bold
-                          uppercase
-                        "
-                      >
+          <div className="mt-1 space-y-1">
 
-                        {room.type === "GROUP"
-                          ? <Users size={18} />
-                          : room.name?.[0]}
+            {rooms
+              .filter((room) => room.type === "GROUP")
+              .map((room) => {
 
-                      </div>
+                const isLastMsgFromMe =
+                  room.last_msg_sender === user.username;
 
-                    )}
+                const displayLastMsg =
+                  room.lastMsg
+                    ? `${isLastMsgFromMe ? "Bạn: " : ""}${room.lastMsg}`
+                    : "Chưa có tin nhắn";
 
-                  </div>
+                return (
 
-                  {!isCollapsed && (
+                  <ConversationItem
+                    key={room.id}
+                    room={room}
+                    selectedChat={selectedChat}
+                    onSelectChat={onSelectChat}
+                    displayLastMsg={displayLastMsg}
+                    getFullUrl={getFullUrl}
+                    isCollapsed={isCollapsed}
+                  />
 
-                    <div className="flex-1 min-w-0">
-
-                      <div className="flex justify-between mb-0.5">
-
-                        <p className="text-sm truncate font-bold">
-                          {room.name}
-                        </p>
-
-                        <span className="text-[9px] opacity-60">
-
-                          {room.updated_at
-                            ? new Date(
-                                room.updated_at
-                              ).toLocaleTimeString(
-                                [],
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit"
-                                }
-                              )
-                            : ""}
-
-                        </span>
-
-                      </div>
-
-                      <p className="text-[12px] truncate text-gray-500">
-                        {displayLastMsg}
-                      </p>
-
-                    </div>
-
-                  )}
-
-                </div>
-
-              );
-            })}
+                );
+              })}
 
           </div>
 
         </div>
 
-        {/* PROFILE */}
+        {/* ================= PROFILE ================= */}
         <div
           className={`
             p-4
@@ -630,7 +593,7 @@ export default function Sidebar({
 
       </div>
 
-      {/* GROUP MODAL */}
+      {/* ================= GROUP MODAL ================= */}
       {showGroupModal && (
 
         <div
@@ -656,7 +619,6 @@ export default function Sidebar({
             "
           >
 
-            {/* HEADER */}
             <div className="flex items-center justify-between mb-5">
 
               <h2 className="text-lg font-bold">
@@ -671,7 +633,6 @@ export default function Sidebar({
 
             </div>
 
-            {/* GROUP NAME */}
             <input
               value={groupName}
               onChange={(e) =>
@@ -689,7 +650,6 @@ export default function Sidebar({
               "
             />
 
-            {/* GROUP AVATAR */}
             <button
               onClick={() =>
                 fileInputRef.current?.click()
@@ -729,7 +689,6 @@ export default function Sidebar({
               }
             />
 
-            {/* SEARCH MEMBER */}
             <input
               value={search}
               onChange={handleSearch}
@@ -745,7 +704,6 @@ export default function Sidebar({
               "
             />
 
-            {/* USER LIST */}
             <div className="max-h-52 overflow-y-auto space-y-2">
 
               {users.map((u) => {
@@ -827,7 +785,6 @@ export default function Sidebar({
 
             </div>
 
-            {/* FOOTER */}
             <button
               onClick={createGroupChat}
               className="
@@ -889,5 +846,118 @@ function SidebarNavItem({
       )}
 
     </div>
+  );
+}
+
+function ConversationItem({
+  room,
+  selectedChat,
+  onSelectChat,
+  displayLastMsg,
+  getFullUrl,
+  isCollapsed
+}) {
+
+  return (
+
+    <div
+      onClick={() => onSelectChat(room)}
+      className={`
+        flex
+        items-center
+        rounded-xl
+        cursor-pointer
+        transition-all
+        ${isCollapsed
+          ? "justify-center h-14 w-14 mx-auto"
+          : "gap-3 px-4 py-3"}
+        ${selectedChat?.id === room.id
+          ? "bg-[#d3e3fd]"
+          : "hover:bg-[#e1e5ea]"}
+      `}
+    >
+
+      {/* AVATAR */}
+      <div className="relative shrink-0">
+
+        {room.avatar ? (
+
+          <img
+            src={getFullUrl(room.avatar)}
+            className="
+              w-10
+              h-10
+              rounded-full
+              object-cover
+            "
+            alt=""
+          />
+
+        ) : (
+
+          <div
+            className="
+              w-10
+              h-10
+              bg-indigo-100
+              text-indigo-700
+              flex
+              items-center
+              justify-center
+              rounded-full
+              text-sm
+              font-bold
+              uppercase
+            "
+          >
+
+            {room.type === "GROUP"
+              ? <Users size={18} />
+              : room.name?.[0]}
+
+          </div>
+
+        )}
+
+      </div>
+
+      {!isCollapsed && (
+
+        <div className="flex-1 min-w-0">
+
+          <div className="flex justify-between mb-0.5">
+
+            <p className="text-sm truncate font-bold">
+              {room.name}
+            </p>
+
+            <span className="text-[9px] opacity-60">
+
+              {room.updated_at
+                ? new Date(
+                    room.updated_at
+                  ).toLocaleTimeString(
+                    [],
+                    {
+                      hour: "2-digit",
+                      minute: "2-digit"
+                    }
+                  )
+                : ""}
+
+            </span>
+
+          </div>
+
+          <p className="text-[12px] truncate text-gray-500">
+            {displayLastMsg}
+          </p>
+
+        </div>
+
+      )}
+
+    </div>
+
   );
 }

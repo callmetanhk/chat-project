@@ -112,7 +112,7 @@ class ConversationListView(APIView):
             Conversation.objects
             .filter(participant__user=user)
             .annotate(
-                last_msg_content=Subquery(
+                last_msg_content=Subquery (
                     latest_message.values('content')[:1]
                 ),
 
@@ -284,7 +284,6 @@ class MessageListView(APIView):
 
     def get(self, request, conversation_id):
 
-        # Kiểm tra xem user có nằm trong conversation này không
         is_participant = Participant.objects.filter(
             conversation_id=conversation_id,
             user=request.user
@@ -295,24 +294,22 @@ class MessageListView(APIView):
                 message="Permission denied",
                 status=status.HTTP_403_FORBIDDEN
             )
-
         messages = (
             Message.objects
             .filter(conversation_id=conversation_id)
-            .select_related('sender')
+            .select_related(
+                'sender',
+                'reply_to',
+                'reply_to__sender'
+            )
             .prefetch_related('attachments')
             .order_by("created_at")
         )
-
         data = []
-
         for message in messages:
             attachments = []
-
             for attachment in message.attachments.all():
-
                 file_url = None
-
                 if attachment.file:
                     try:
                         file_url = request.build_absolute_uri(
@@ -325,15 +322,44 @@ class MessageListView(APIView):
                     "id": attachment.id,
                     "file_url": file_url,
                     "file_type": attachment.file_type,
-                    "file_name": attachment.file_name
+                    "file_name": attachment.file_name,
+                    "is_image":
+                        attachment.file_type.startswith("image/")
+                        if attachment.file_type else False
                 })
+            reply_data = None
 
+            if message.reply_to:
+                reply_data = {
+                    "id": message.reply_to.id,
+                    "message": message.reply_to.content,
+                    "sender": message.reply_to.sender.username
+                }
+            sender_avatar = None
+            if message.sender.avatar:
+                try:
+                    sender_avatar = request.build_absolute_uri(
+                        message.sender.avatar.url
+                    )
+                except Exception:
+                    sender_avatar = None
             data.append({
                 "id": message.id,
-                "sender": message.sender.username,
                 "message": message.content,
-                "created_at": message.created_at,
-                "attachments": attachments
+                "created_at":  message.created_at,
+                "is_me": message.sender_id == request.user.id,
+                "is_edited": message.is_edited,
+                "is_deleted": message.is_deleted,
+                "sender": {
+                    "id": message.sender.id,
+                    "username": message.sender.username,
+                    "full_name": message.sender.full_name,
+                    "avatar": sender_avatar
+                },
+                "reply_to":
+                    reply_data,
+                "attachments":
+                    attachments
             })
 
         return success_response(
